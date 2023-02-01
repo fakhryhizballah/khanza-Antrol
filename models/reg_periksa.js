@@ -11,6 +11,21 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      // Food_variant.hasOne(models.Foods, {
+      //   foreignKey: 'id',
+      //   sourceKey: 'food_id',
+      //   as: 'category'
+      // });
+      reg_periksa.belongsTo(models.pasien, {
+        foreignKey: 'no_rkm_medis',
+        sourceKey: 'no_rkm_medis',
+        as: 'pasien'
+      });
+      reg_periksa.belongsTo(models.kamar_inap, {
+        foreignKey: 'no_rawat',
+        sourceKey: 'no_rawat',
+        as: 'kamar_inap'
+        });
     }
     
   }

@@ -11,6 +11,14 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      kamar_inap.hasOne(models.kamar, {
+        foreignKey: 'kd_kamar',
+        sourceKey: 'kd_kamar',
+      });
+      kamar_inap.hasOne(models.reg_periksa, {
+        foreignKey: 'no_rawat',
+        sourceKey: 'no_rawat',
+      });
     }
     
   }
@@ -33,6 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     lama: DataTypes.DOUBLE,
     ttl_biaya: DataTypes.DOUBLE,
     diagnosa_awal: DataTypes.STRING,
+    kd_kamar: DataTypes.STRING,
     diagnosa_akhir: DataTypes.STRING,
     stts_pulang: DataTypes.ENUM('Sehat','Rujuk','APS','+','Meninggal','Sembuh','Membaik','Pulang Paksa','-','Pindah Kamar','Status Belum Lengkap','Atas Persetujuan Dokter','Atas Permintaan Sendiri','Isoman','Lain-lain'),
   }, {
