@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'no_rawat',
         sourceKey: 'no_rawat',
       });
+      kamar_inap.hasOne(models.kamar, {
+        foreignKey: 'kd_kamar',
+        sourceKey: 'kd_kamar',
+      });
     }
     
   }

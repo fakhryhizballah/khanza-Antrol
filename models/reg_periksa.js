@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       //   sourceKey: 'food_id',
       //   as: 'category'
       // });
-      reg_periksa.belongsTo(models.pasien, {
+      reg_periksa.hasOne(models.pasien, {
         foreignKey: 'no_rkm_medis',
         sourceKey: 'no_rkm_medis',
         as: 'pasien'

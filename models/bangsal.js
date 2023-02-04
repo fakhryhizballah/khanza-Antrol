@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      bangsal.hasMany(models.kamar, {
+        foreignKey: 'kd_bangsal',
+        sourceKey: 'kd_bangsal',
+      });
     }
     
   }
