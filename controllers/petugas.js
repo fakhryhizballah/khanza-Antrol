@@ -90,6 +90,9 @@ module.exports = {
             if (!param.limit) {
                 param.limit = 10;
             }
+            if (param.limit > 100) {
+                param.limit = 100;
+            }
             if (!param.search) {
                 param.search = '';
             }
