@@ -101,6 +101,7 @@ module.exports = {
                     [Op.or]: [
                         { nm_pasien: { [Op.substring]: param.search } },
                         { tgl_lahir: { [Op.substring]: param.search } },
+                        { no_rkm_medis: { [Op.substring]: param.search } },
                     ]
                 },
                 limit: parseInt(param.limit)
