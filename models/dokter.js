@@ -21,7 +21,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     nm_dokter: DataTypes.STRING,
     jk: DataTypes.ENUM('L', 'P'),
-    tgl_lahir: DataTypes.DATE,
+    // tgl_lahir: DataTypes.DATE,
+    no_ijn_praktek: DataTypes.STRING,
 
   }, {
     sequelize,

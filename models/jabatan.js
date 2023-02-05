@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class petugas extends Model {
+  class jabatan extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,35 +11,28 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      petugas.belongsTo(models.jabatan, {
-        foreignKey: 'kd_jbtn',
-        as: 'jabatan',
-      });
     }
-    
+
   }
-  petugas.init({
-    nip: {
+  jabatan.init({
+    kd_jbtn: {
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    nama: DataTypes.STRING,
-    jk: DataTypes.ENUM('L', 'P'),
-    kd_jbtn: DataTypes.STRING,
-    // tgl_lahir: DataTypes.DATE,
+    nm_jbtn: DataTypes.STRING,
     // createdAt: { type: DataTypes.DATE, field: 'created_at' },
     // updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
-     // If don't want createdAt
+    // If don't want createdAt
   }, {
     sequelize,
-    modelName: 'petugas',
-    tableName: 'petugas',
+    modelName: 'jabatan',
+    tableName: 'jabatan',
     timestamps: false,
     createdAt: false,
     updatedAt: false,
-    
-    
-   
+
+
+
   });
-  return petugas;
+  return jabatan;
 };
