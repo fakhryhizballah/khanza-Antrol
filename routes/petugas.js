@@ -1,12 +1,13 @@
 'use strict';
 const express = require("express");
 const routes = express.Router();
+const middleware = require('../middleware');
 
 const petugas = require('../controllers/petugas');
 
-routes.get('/dokter', petugas.getDokter);
-routes.get('/perawat', petugas.getPerawat);
-routes.get('/pasien', petugas.getPasien);
+routes.get('/dokter', middleware.check, petugas.getDokter);
+routes.get('/perawat', middleware.check, petugas.getPerawat);
+routes.get('/pasien', middleware.check, petugas.getPasien);
 
 
 module.exports = routes;
