@@ -67,7 +67,6 @@ module.exports = {
                 no_ijn_praktek: data.no_ijn_praktek,
                 specialis: data.spesiali.nm_sps,
             }
-            // console.log(data.spesiali.nm_sps);
             return res.status(200).json({
                 status: true,
                 message: 'Data Dokter',
@@ -129,7 +128,48 @@ module.exports = {
                 data: error,
             });
         }
-
+    },
+    getDetailPerawat: async (req, res) => {
+        try {
+            const { id } = req.params;
+            let data = await petugas.findOne({
+                attributes: ['nip', 'nama', 'jk'],
+                where: {
+                    nip: id
+                },
+                include: [{
+                    model: jabatan,
+                    as: 'jabatan',
+                    attributes: ['nm_jbtn'],
+                }],
+            });
+            if (!data) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'NIK tidak ditemukan',
+                    data: {
+                        nik: id,
+                    },
+                });
+            }
+            let dataPetugas = {
+                nip: data.nip,
+                nama: data.nama,
+                jk: data.jk,
+                jabatan: data.jabatan.nm_jbtn,
+            }
+            return res.status(200).json({
+                status: true,
+                message: 'Data Petugas',
+                data: dataPetugas,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: 'Internal Server Error',
+                data: error,
+            });
+        }
     },
     getPasien: async (req, res) => {
         try {
