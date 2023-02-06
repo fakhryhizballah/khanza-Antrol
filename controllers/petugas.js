@@ -24,7 +24,7 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',
-                recoud: data.length,
+                record: data.length,
                 data: data,
             });
         } catch (error) {
@@ -117,7 +117,7 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',
-                recoud: data.length,
+                record: data.length,
                 data: data,
             });
 
@@ -198,7 +198,7 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',
-                recoud: data.length,
+                record: data.length,
                 data: data,
             });
         } catch (error) {

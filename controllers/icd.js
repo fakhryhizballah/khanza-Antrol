@@ -8,14 +8,17 @@ geticd10: async (req, res) => {
         if (!param.limit) {
             param.limit = 10;
         }
-        if (!param.search) {
-            return res.status(422).json({
-                status: false,
-                message: 'Search is required in params',
-                data: null
-            });
-            
+        if (param.limit > 100) {
+            param.limit = 100;
         }
+        // if (!param.search) {
+        //     return res.status(422).json({
+        //         status: false,
+        //         message: 'Search is required in params',
+        //         data: null
+        //     });
+
+        // }
         const data = await icd10.findAll({
             where: {
                 [Op.or]: [
@@ -31,6 +34,7 @@ geticd10: async (req, res) => {
         return res.status(200).json({
             status: true,
             message: 'Data icd10',
+            record: data.length,
             data: data
         }
         );
@@ -78,13 +82,8 @@ geticd10: async (req, res) => {
         if (!param.limit) {
             param.limit = 10;
         }
-        if (!param.search) {
-            return res.status(422).json({
-                status: false,
-                message: 'Search is required in params',
-                data: null
-            });
-            
+        if (param.limit > 100) {
+            param.limit = 100;
         }
         const data = await icd9.findAll({
             where: {
@@ -101,6 +100,7 @@ geticd10: async (req, res) => {
         return res.status(200).json({
             status: true,
             message: 'Data icd9',
+            record: data.length,
             data: data
         }
         );

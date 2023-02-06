@@ -109,8 +109,8 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',
-                recoud: reg.length,
-                // recoudall: count,
+                record: reg.length,
+                // recordall: count,
                 // data: find,
                 // data: dataReg,
                 data: reg,
@@ -162,7 +162,7 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data kamar',
-                // recoud: dataKamar.length,
+                // record: dataKamar.length,
                 data: dataKamar,
             });
         } catch (err) {
