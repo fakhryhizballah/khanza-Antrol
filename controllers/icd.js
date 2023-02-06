@@ -42,6 +42,35 @@ geticd10: async (req, res) => {
         });
     }
 
+    },
+    getdetailICD10: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = await icd10.findOne({
+                where: {
+                    kd_penyakit: id
+                }
+            });
+            if (!data) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'Data not found',
+                    data: null
+                });
+            }
+            return res.status(200).json({
+                status: true,
+                message: 'Data icd10',
+                data: data
+            }
+            );
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
   },
   geticd9: async (req, res) => {
     try{
@@ -82,6 +111,34 @@ geticd10: async (req, res) => {
             data: err
         });
     }
-
+    },
+    getdetailICD9: async (req, res) => {
+        try {
+            const { id } = req.params;
+            const data = await icd9.findOne({
+                where: {
+                    kode: id
+                }
+            });
+            if (!data) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'Data not found',
+                    data: null
+                });
+            }
+            return res.status(200).json({
+                status: true,
+                message: 'Data icd9',
+                data: data
+            }
+            );
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
   }
 };
