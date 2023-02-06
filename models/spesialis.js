@@ -3,7 +3,7 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class dokter extends Model {
+  class spesialis extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -11,34 +11,29 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      dokter.belongsTo(models.spesialis, {
-        foreignKey: 'kd_sps',
-        sourceKey: 'kd_sps',
-      });
     }
-    
+
   }
-  dokter.init({
-    kd_dokter: {
+  spesialis.init({
+    kd_sps: {
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    nm_dokter: DataTypes.STRING,
-    jk: DataTypes.ENUM('L', 'P'),
-    // tgl_lahir: DataTypes.DATE,
-    no_ijn_praktek: DataTypes.STRING,
-    kd_sps: DataTypes.STRING,
+    nm_sps: DataTypes.STRING,
 
+    // createdAt: { type: DataTypes.DATE, field: 'created_at' },
+    // updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
+    // If don't want createdAt
   }, {
     sequelize,
-    modelName: 'dokter',
-    tableName: 'dokter',
+    modelName: 'spesialis',
+    tableName: 'spesialis',
     timestamps: false,
     createdAt: false,
     updatedAt: false,
-    
-    
-   
+
+
+
   });
-  return dokter;
+  return spesialis;
 };

@@ -1,4 +1,4 @@
-const { dokter, petugas, jabatan, pasien, kelurahan, kecamatan, kabupaten, penjab } = require('../models');
+const { dokter, petugas, jabatan, pasien, kelurahan, kecamatan, kabupaten, penjab, spesialis } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
     getDokter: async (req, res) => {
@@ -11,6 +11,7 @@ module.exports = {
                 param.search = '';
             }
             let data = await dokter.findAll({
+                attributes: { exclude: ['kd_sps'] },
                 where: {
                     [Op.or]: [
                         { kd_dokter: { [Op.substring]: param.search } },
@@ -35,6 +36,53 @@ module.exports = {
         }
 
     },
+    getDetailDokter: async (req, res) => {
+        try {
+            const { id } = req.params;
+            let data = await dokter.findOne({
+                attributes: { exclude: ['kd_sps'] },
+                where: {
+                    kd_dokter: id
+                },
+                include: [{
+                    model: spesialis,
+                    attributes: ['nm_sps'],
+                }],
+
+            });
+            if (!data) {
+                return res.status(404).json({
+                    status: false,
+                    message: 'NIK tidak ditemukan',
+                    data: {
+                        nik: id,
+                    },
+                });
+            }
+            let dataDokter = {
+                kd_dokter: data.kd_dokter,
+                nm_dokter: data.nm_dokter,
+                jk: data.jk,
+                tgl_lahir: data.tgl_lahir,
+                no_ijn_praktek: data.no_ijn_praktek,
+                specialis: data.spesiali.nm_sps,
+            }
+            // console.log(data.spesiali.nm_sps);
+            return res.status(200).json({
+                status: true,
+                message: 'Data Dokter',
+                data: dataDokter,
+                // data: data,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: 'Internal Server Error',
+                data: error,
+            });
+        }
+    },
+
     getPerawat: async (req, res) => {
         try {
             const param = req.query;
