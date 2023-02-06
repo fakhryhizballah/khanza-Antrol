@@ -173,15 +173,12 @@ module.exports = {
                 asuransi: dataPasien.penjab.png_jawab,
                 no_peserta: dataPasien.no_peserta,
             };
-            console.log(dataPasien);
             return res.status(200).json({
                 status: false,
                 message: 'Data pasien',
                 data: data,
-                raw: dataPasien,
             });
         } catch (error) {
-            console.log(error);
             return res.status(500).json({
                 status: false,
                 message: 'Internal Server Error',
