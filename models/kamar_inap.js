@@ -14,14 +14,11 @@ module.exports = (sequelize, DataTypes) => {
       kamar_inap.hasOne(models.kamar, {
         foreignKey: 'kd_kamar',
         sourceKey: 'kd_kamar',
+        as: 'kode_kamar'
       });
-      kamar_inap.hasOne(models.reg_periksa, {
+      kamar_inap.belongsTo(models.reg_periksa, {
         foreignKey: 'no_rawat',
         sourceKey: 'no_rawat',
-      });
-      kamar_inap.hasOne(models.kamar, {
-        foreignKey: 'kd_kamar',
-        sourceKey: 'kd_kamar',
       });
     }
     

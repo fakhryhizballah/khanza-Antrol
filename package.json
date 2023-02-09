@@ -1,6 +1,6 @@
 {
   "name": "simrsgw",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Api SIMRS Kanza",
   "main": "index.js",
   "scripts": {

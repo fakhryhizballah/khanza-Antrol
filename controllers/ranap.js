@@ -55,9 +55,10 @@ module.exports = {
                             [Op.or]: [
                                 { no_rawat: { [Op.substring]: param.search } },
                                 { no_rkm_medis: { [Op.substring]: param.search } },
-                                { '$pasien.nm_pasien$': { [Op.substring]: param.search } },
                             ]
                         },
+                        // { '$pasien.nm_pasien$': { [Op.substring]: param.search } },
+                        // { '$kamar_inap.kd_bangsal$': { [Op.substring]: 'ZA' } },
 
                     ],
 
@@ -73,6 +74,7 @@ module.exports = {
                         model: pasien,
                         as: 'pasien',
                         attributes: ['nm_pasien', 'jk', 'tgl_lahir',],
+                        where:{nm_pasien:{ [Op.substring]: param.nm_pasien }}
                     },
                     {
                         model: kamar_inap,
@@ -81,19 +83,26 @@ module.exports = {
                         where: {
                             [Op.and]: [
                                 { tgl_keluar: '0000-00-00' },
+                                // { '$kamar.kd_bangsal$': { [Op.substring]: 'ZA' } }
+                                // {
+                                    // [Op.or]: [
+                                        
+                                    // ]
+                                // }
                             ]
                         },
                         include: [
                             {
                                 model: kamar,
-                                as: 'kamar',
+                                as: 'kode_kamar',
                                 attributes: ['kd_bangsal', 'kelas'],
-                                // where: { kelas: { [Op.substring]: param.kelas } },
+                                // where: { kd_bangsal: { [Op.substring]: 'ZA' } },
                                 include: [
                                     {
                                         model: bangsal,
                                         attributes: ['nm_bangsal'],
-                                        // where: { nm_bangsal: { [Op.substring]: param.nm_bangsal } },
+                                        // where: { kd_bangsal: { [Op.substring]: param.nm_bangsal } },
+                                        // where: { kd_bangsal: { [Op.substring]: 'ZA' } },
                                     }
                                 ]
                             },
@@ -106,6 +115,7 @@ module.exports = {
                     ['no_rawat', 'DESC']
                 ],
             });
+            
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',

@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'no_rkm_medis',
         as: 'pasien'
       });
-      reg_periksa.belongsTo(models.kamar_inap, {
+      reg_periksa.hasMany(models.kamar_inap, {
         foreignKey: 'no_rawat',
         sourceKey: 'no_rawat',
         as: 'kamar_inap'
