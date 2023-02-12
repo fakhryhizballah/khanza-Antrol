@@ -8,43 +8,6 @@ module.exports = {
             if (!param.limit) {
                 param.limit = 10;
             }
-            // let dataReg = await kamar_inap.findAll({
-            //     where: {
-            //         [Op.and]: [
-            //             { tgl_keluar: '0000-00-00' },
-            //             { no_rawat: { [Op.substring]: param.no_rawat } }
-            //         ]
-            //     },
-            //     attributes: ['no_rawat', 'tgl_masuk', 'jam_masuk', 'kd_kamar'],
-            //     include: [
-            //         {
-            //             model: reg_periksa,
-            //             as: 'reg_periksa',
-            //             attributes: ['no_rkm_medis'],
-            //             // where: {
-            //             //     no_rkm_medis: { [Op.substring]: param.no_rkm_medis },
-            //             //     // [Op.substring]: param.search,
-            //             // },
-            //             include: [
-            //                 {
-            //                     model: pasien,
-            //                     as: 'pasien',
-            //                     attributes: ['nm_pasien', 'jk', 'tgl_lahir',],
-
-            //                 },
-            //             ],
-            //         },
-            //     ],
-            //     limit: parseInt(param.limit)
-            // });
-            // let count = await kamar_inap.count({
-            //     where: {
-            //         [Op.and]: [
-            //             { tgl_keluar: '0000-00-00' },
-            //             // { no_rawat: { [Op.substring]: param.no_rawat } }
-            //         ]
-            //     },
-            // });
             let reg = await reg_periksa.findAll({
 
                 attributes: ['no_rawat', 'no_rkm_medis'],
@@ -74,7 +37,7 @@ module.exports = {
                         model: pasien,
                         as: 'pasien',
                         attributes: ['nm_pasien', 'jk', 'tgl_lahir',],
-                        where:{nm_pasien:{ [Op.substring]: param.nm_pasien }}
+                        where: { nm_pasien: { [Op.substring]: param.nm_pasien } }
                     },
                     {
                         model: kamar_inap,
@@ -85,9 +48,9 @@ module.exports = {
                                 { tgl_keluar: '0000-00-00' },
                                 // { '$kamar.kd_bangsal$': { [Op.substring]: 'ZA' } }
                                 // {
-                                    // [Op.or]: [
-                                        
-                                    // ]
+                                // [Op.or]: [
+
+                                // ]
                                 // }
                             ]
                         },
@@ -115,7 +78,7 @@ module.exports = {
                     ['no_rawat', 'DESC']
                 ],
             });
-            
+
             return res.status(200).json({
                 status: true,
                 message: 'Data ranap',
@@ -133,20 +96,167 @@ module.exports = {
             });
         }
     },
+    getTglMasuk: async (req, res) => {
+        try {
+            const param = req.query;
+            let rawatPasien = await kamar_inap.findAll({
+                attributes: ['no_rawat','tgl_masuk', 'jam_masuk', 'tgl_keluar', 'jam_keluar', 'kd_kamar'],
+                where: {
+                    tgl_masuk: { [Op.between]: [param.from, param.until] },
+                    '$kode_kamar.kd_bangsal$': { [Op.substring]: param.kd_bangsal } ,
+                    // and or 
+                    [Op.or]: [
+                        { no_rawat: { [Op.substring]: param.search } },
+                        { kd_kamar: { [Op.substring]: param.search } },
+                        
+                        { '$kode_kamar.kelas$': { [Op.substring]: param.search } },
+    
+                        { '$reg_periksa.no_rkm_medis$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.nm_pasien$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.jk$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.tmp_lahir$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.tgl_lahir$': { [Op.substring]: param.search } },
+
+                    ],
+                },
+                include: [
+                    {
+                        model: kamar,
+                        as: 'kode_kamar',
+                        attributes: ['kd_bangsal', 'kelas'],
+                        include: [
+                            {
+                                model: bangsal,
+                                attributes: ['nm_bangsal'],
+                            }
+                        ]
+                    },
+                    {
+                        model: reg_periksa,
+                        attributes: ['no_rkm_medis'],
+                        include: [{
+                            model: pasien,
+                            as: 'pasien',
+                            attributes: ['nm_pasien', 'jk', 'tgl_lahir', 'tmp_lahir']
+                        }]
+                    },
+
+                ]
+            });
+            let data = rawatPasien.map((item) => {
+                return {
+                    no_rawat: item.no_rawat,
+                    no_rkm_medis: item.reg_periksa.no_rkm_medis,
+                    nm_pasien: item.reg_periksa.pasien.nm_pasien,
+                    jk: item.reg_periksa.pasien.jk,
+                    tgl_lahir: item.reg_periksa.pasien.tgl_lahir,
+                    tmp_lahir: item.reg_periksa.pasien.tmp_lahir,
+                    tgl_masuk: item.tgl_masuk,
+                    jam_masuk: item.jam_masuk,
+                    tgl_keluar: item.tgl_keluar,
+                    jam_keluar: item.jam_keluar,
+                    nm_bangsal: item.kode_kamar.bangsal.nm_bangsal,
+                    kd_bangsal: item.kode_kamar.kd_bangsal,
+                    kd_kamar: item.kd_kamar,
+                    kelas: item.kode_kamar.kelas,
+                }
+            });
+            return res.status(200).json({
+                status: true,
+                message: 'Data ranap',
+                record: rawatPasien.length,
+                data: data,
+                queryParam: param,
+            });
+
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
+    },
+    getBp: async (req, res) => {
+        try {
+            const param = req.query;
+            let rawatPasien = await kamar_inap.findAll({
+                attributes: ['no_rawat', 'kd_kamar'],
+                where: {
+                    // tgl_masuk: { [Op.between]: [param.from, param.until] },
+                    tgl_keluar:'0000-00-00',
+                    '$kode_kamar.kd_bangsal$': { [Op.substring]: param.kd_bangsal } ,
+                    
+                    // and or
+                    [Op.or]: [
+                        { no_rawat: { [Op.substring]: param.search } },
+                        { kd_kamar: { [Op.substring]: param.search } },
+                        { '$kode_kamar.kelas$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.no_rkm_medis$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.nm_pasien$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.jk$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.tmp_lahir$': { [Op.substring]: param.search } },
+                        { '$reg_periksa.pasien.tgl_lahir$': { [Op.substring]: param.search } },
+                    ]
+                },
+                include: [
+                    {
+                        model: kamar,
+                        as: 'kode_kamar',
+                        attributes: ['kd_bangsal', 'kelas'],
+                        include: [
+                            {
+                                model: bangsal,
+                                attributes: ['nm_bangsal'],
+                            }
+                        ]
+                    },
+                    {
+                        model: reg_periksa,
+                        attributes: ['no_rkm_medis'],
+                        include: [{
+                            model: pasien,
+                            as: 'pasien',
+                            attributes: ['nm_pasien', 'jk', 'tgl_lahir', 'tmp_lahir']
+                        }]
+                    },
+                ]
+            });
+            let data = rawatPasien.map((item) => {
+                return {
+                    no_rawat: item.no_rawat,
+                    no_rkm_medis: item.reg_periksa.no_rkm_medis,
+                    nm_pasien: item.reg_periksa.pasien.nm_pasien,
+                    jk: item.reg_periksa.pasien.jk,
+                    tgl_lahir: item.reg_periksa.pasien.tgl_lahir,
+                    tmp_lahir: item.reg_periksa.pasien.tmp_lahir,
+                    tgl_masuk: item.tgl_masuk,
+                    jam_masuk: item.jam_masuk,
+                    tgl_keluar: item.tgl_keluar,
+                    jam_keluar: item.jam_keluar,
+                    nm_bangsal: item.kode_kamar.bangsal.nm_bangsal,
+                    kd_bangsal: item.kode_kamar.kd_bangsal,
+                    kd_kamar: item.kd_kamar,
+                    kelas: item.kode_kamar.kelas,
+                }
+            });
+            return res.status(200).json({
+                status: true,
+                message: 'Data ranap',
+                record: rawatPasien.length,
+                data: data,
+                queryParam: param,
+            });
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
+    },
     getKamar: async (req, res) => {
         try {
-            // let dataKamar = await kamar.findAll({
-            //     // group: 'kd_bangsal',
-            //     attributes: ['kd_kamar', 'kd_bangsal', 'kelas'],
-            //     include: [
-            //         {
-            //             model: bangsal,
-            //             attributes: ['nm_bangsal'],
-            //         }
-            //     ],
-
-            //     // limit: 10,
-            // });
             let dataKamar = await bangsal.findAll({
                 // attributes: ['kd_bangsal', 'nm_bangsal'],
                 // not attributes 
@@ -184,7 +294,5 @@ module.exports = {
         }
 
     },
-    getBangsal: async (req, res) => {
-    }
 
 }
