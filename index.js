@@ -10,7 +10,9 @@ app.use(morgan('dev'));
 const routes = require('./routes/ranap');
 const routesicd = require('./routes/icd');
 const routespetugas = require('./routes/petugas');
+const routeralan  = require('./routes/ralan');
 app.use('/api/ranap', routes);
+app.use('/api/ralan', routeralan);
 app.use('/api/icd', routesicd);
 app.use('/api/petugas', routespetugas);
 

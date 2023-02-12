@@ -21,13 +21,24 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'no_rkm_medis',
         as: 'pasien'
       });
+      reg_periksa.hasOne(models.dokter, {
+        foreignKey: 'kd_dokter',
+        sourceKey: 'kd_dokter',
+        as: 'dokter'
+      });
       reg_periksa.hasMany(models.kamar_inap, {
         foreignKey: 'no_rawat',
         sourceKey: 'no_rawat',
         as: 'kamar_inap'
-        });
+      });
+      reg_periksa.hasOne(models.poliklinik, {
+        foreignKey: 'kd_poli',
+        sourceKey: 'kd_poli',
+        as: 'poliklinik'
+      });
+      
     }
-    
+
   }
   reg_periksa.init({
     no_reg: DataTypes.STRING,
@@ -41,9 +52,9 @@ module.exports = (sequelize, DataTypes) => {
     no_rkm_medis: DataTypes.STRING,
     kd_dokter: DataTypes.STRING,
     kd_poli: DataTypes.STRING,
-    status_poli: DataTypes.ENUM('Lama','Baru'),
-    stts_daftar: DataTypes.ENUM('-','Lama','Baru'),
-    status_lanjut: DataTypes.ENUM('Ralan','Ranap'),
+    status_poli: DataTypes.ENUM('Lama', 'Baru'),
+    stts_daftar: DataTypes.ENUM('-', 'Lama', 'Baru'),
+    status_lanjut: DataTypes.ENUM('Ralan', 'Ranap'),
   }, {
     sequelize,
     modelName: 'reg_periksa',
@@ -51,9 +62,9 @@ module.exports = (sequelize, DataTypes) => {
     timestamps: false,
     createdAt: false,
     updatedAt: false,
-    
-    
-   
+
+
+
   });
   return reg_periksa;
 };
