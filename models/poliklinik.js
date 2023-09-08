@@ -10,6 +10,14 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
       static associate(models) {
+        poliklinik.hasMany(models.jadwal, {
+          as: 'jadwal',
+          foreignKey: 'kd_poli',
+        });
+        poliklinik.hasMany(models.reg_periksa, {
+          as: 'reg_periksa',
+          foreignKey: 'kd_poli',
+        });
       }
   }
   poliklinik.init({

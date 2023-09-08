@@ -10,5 +10,6 @@ const ralan = require('../controllers/ralan');
 routes.get('/igd',middleware.check, ralan.getIGD);
 routes.get('/poli',middleware.check, ralan.getPoli);
 routes.get('/poli/:kd_poli',middleware.check, ralan.getPoliByKdPoli);
+routes.get('/jadwal', middleware.check, ralan.getJadwalPoli);
 
 module.exports = routes;
