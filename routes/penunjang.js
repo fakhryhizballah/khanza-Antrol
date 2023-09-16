@@ -5,10 +5,10 @@ const middleware = require('../middleware');
 
 const penunjang = require('../controllers/penunjang');
 
-// routes.get('/jnsLab',middleware.check, penunjang.getTempLab);
-routes.get('/jnsLab',middleware.check, penunjang.getTempLab);
-routes.get('/jnsRad',middleware.check, penunjang.getTempRad);
+routes.get('/cariLab', middleware.check, penunjang.getCariLab);
+routes.get('/jnsLab', middleware.check, penunjang.getTempLab);
 routes.get('/jnsLab/:id',middleware.check, penunjang.getTempLabDetail);
+routes.get('/jnsRad', middleware.check, penunjang.getTempRad);
 
 
 module.exports = routes;

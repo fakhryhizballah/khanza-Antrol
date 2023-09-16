@@ -26,6 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     nilai_rujukan_la: DataTypes.STRING,
     nilai_rujukan_pd: DataTypes.STRING,
     nilai_rujukan_pa: DataTypes.STRING,
+    bagian_rs: DataTypes.DOUBLE,
+    bhp: DataTypes.DOUBLE,
+    biaya_item: DataTypes.DOUBLE,
     urut: DataTypes.INTEGER,
 
     // createdAt: { type: DataTypes.DATE, field: 'created_at' },

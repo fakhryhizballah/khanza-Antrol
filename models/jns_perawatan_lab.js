@@ -11,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      
+      jns_perawatan_lab.hasMany(models.template_laboratorium, {
+        as: 'template_laboratorium',
+        foreignKey: 'kd_jenis_prw',
+      });
     }
 
   }
@@ -24,6 +27,8 @@ module.exports = (sequelize, DataTypes) => {
     bagian_rs: DataTypes.DOUBLE,
     bhp: DataTypes.DOUBLE,
     total_byr: DataTypes.DOUBLE,
+    kelas: DataTypes.ENUM('-', 'Rawat Jalan', 'Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas Utama', 'Kelas VIP', 'Kelas VVIP'),
+    kategori: DataTypes.ENUM('PK', 'PA', 'MB'),
     status: DataTypes.ENUM('1','0'),
 
     // createdAt: { type: DataTypes.DATE, field: 'created_at' },
