@@ -6,7 +6,7 @@ module.exports = {
         try {
             const param = req.query;
             if (!param.limit) {
-                param.limit = 10;
+                param.limit = 100;
             }
             if (param.limit > 100) {
                 param.limit = 100;
@@ -77,7 +77,7 @@ module.exports = {
         try {
             const param = req.query;
             if (!param.limit) {
-                param.limit = 10;
+                param.limit = 100;
             }
             if (param.limit > 100) {
                 param.limit = 100;
@@ -122,7 +122,7 @@ module.exports = {
         try {
             const param = req.query;
             if (!param.limit) {
-                param.limit = 10;
+                param.limit = 100;
             }
             if (param.limit > 100) {
                 param.limit = 100;
