@@ -137,7 +137,7 @@ module.exports = {
                 },
                 //toINT: parseInt(param.limit),
                 limit: parseInt(param.limit),
-                attributes: ['kd_jenis_prw', 'nm_perawatan'],
+                // attributes: ['kd_jenis_prw', 'nm_perawatan'],
             });
             return res.status(200).json({
                 status: true,
