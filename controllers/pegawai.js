@@ -148,7 +148,7 @@ module.exports = {
                     nik: nik,
                 }
             });
-            let p = awaitpetugas.update({
+            let p = await petugas.update({
                 nama: nama,
                 jk: JenisKelamin,
             }, {
