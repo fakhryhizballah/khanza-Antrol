@@ -148,7 +148,7 @@ module.exports = {
                     nik: nik,
                 }
             });
-            await petugas.update({
+            let p = awaitpetugas.update({
                 nama: nama,
                 jk: JenisKelamin,
             }, {
@@ -156,7 +156,7 @@ module.exports = {
                     nip: nik,
                 }
             });
-            await dokter.update({
+            let d = await dokter.update({
                 nm_dokter: nama,
                 jk: JenisKelamin,
             }, {
@@ -167,7 +167,11 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data Pegawai',
-                data: data,
+                data: {
+                    pegawai: data,
+                    petugas: p,
+                    dokter: d,
+                },
             });
 
         } catch (error) {
