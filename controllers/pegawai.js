@@ -62,7 +62,11 @@ module.exports = {
                         no_ktp: {
                             [Op.like]: '%' + search + '%'
                         }
-                    }]
+                    }],
+                    stts_aktif:{
+                        [Op.notLike]: 'KELUAR'
+                    }
+
                 },
                 attributes: ['nik', 'nama', 'no_ktp', 'jk', 'jbtn', 'tmp_lahir', 'tgl_lahir', 'photo'],
                 limit: limit
