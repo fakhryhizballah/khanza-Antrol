@@ -15,12 +15,21 @@ module.exports = {
     },
     getPassword: async (req, res) => {
         let nip = req.params.nip;
-        let user = await findUserPassword(nip);
-        return res.status(200).json({
-            status: true,
-            message: 'Password User',
-            data: user,
-        });
+        try {
+            let user = await findUserPassword(nip);
+            return res.status(200).json({
+                status: true,
+                message: 'Password User',
+                data: user,
+            });
+        } catch (error) {
+            return res.status(404).json({
+                status: false,
+                message: 'User tidak ditemukan',
+                data: null,
+            });
+        }
+
     },
     updatedPasword: async (req, res) => {
         let nip = req.params.nip;
