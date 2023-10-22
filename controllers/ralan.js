@@ -146,6 +146,65 @@ module.exports = {
 
         }
     },
+    getJadwaldrPoli: async (req, res) => {
+        try {
+            let query = req.query;
+            let dataJadwal = await jadwal.findAll({
+                attributes: ['kd_dokter', 'hari_kerja', 'jam_mulai', 'jam_selesai', 'kd_poli', 'kuota'],
+                where: {
+                    kd_poli: query.kd_poli,
+                },
+                include: [{
+                    model: dokter,
+                    as: 'dokter',
+                    attributes: ['nm_dokter']
+                }],
+                order: [
+                    ['kd_dokter', 'ASC'],
+                ],
+            });
+            const groupedData = {};
+
+            dataJadwal.forEach(item => {
+                const kdDokter = item.kd_dokter;
+                const namaDokter = item.dokter.nm_dokter;
+                const hariKerja = item.hari_kerja;
+                const jamMulai = item.jam_mulai;
+                const jamSelesai = item.jam_selesai;
+
+                if (!groupedData[namaDokter]) {
+                    groupedData[namaDokter] = {
+                        kd_dokter: kdDokter,
+                        nm_dokter: namaDokter,
+                        jadwal: []
+                    };
+                }
+
+                groupedData[namaDokter].jadwal.push({
+                    hari_kerja: hariKerja,
+                    jam_mulai: jamMulai,
+                    jam_selesai: jamSelesai
+                });
+            });
+
+            const groupedDataArray = Object.values(groupedData);
+            return res.status(200).json({
+                status: true,
+                message: 'Data jadwal',
+                record: dataJadwal.length,
+                data: groupedDataArray,
+            });
+
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err.message
+            });
+
+        }
+    },
     getDrPoli: async (req, res) => {
         try {
             let dataJadwal = await jadwal.findAll({
