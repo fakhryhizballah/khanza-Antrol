@@ -174,6 +174,7 @@ module.exports = {
                 if (!groupedData[kdPoli]) {
                     groupedData[kdPoli] = {
                         poliklinik: item.poliklinik.nm_poli,
+                        kd_poli: kdPoli,
                         dokter: [namaDokter]
                     };
                 } else {
