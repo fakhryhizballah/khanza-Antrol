@@ -145,6 +145,60 @@ module.exports = {
             });
 
         }
-    }
+    },
+    getDrPoli: async (req, res) => {
+        try {
+            let dataJadwal = await jadwal.findAll({
+                attributes: ['kd_dokter', 'kd_poli'],
+                include: [{
+                    model: dokter,
+                    as: 'dokter',
+                    attributes: ['nm_dokter', 'kd_dokter']
+                }, {
+
+                    model: poliklinik,
+                    as: 'poliklinik',
+                    attributes: ['nm_poli']
+                }],
+                group: ['kd_dokter', 'kd_poli'],
+                order: [
+                    ['kd_poli', 'ASC'],
+                    ['kd_dokter', 'ASC'],
+                ],
+            });
+            const groupedData = {};
+            dataJadwal.forEach(item => {
+                const kdPoli = item.kd_poli;
+                const namaDokter = item.dokter.nm_dokter;
+
+                if (!groupedData[kdPoli]) {
+                    groupedData[kdPoli] = {
+                        poliklinik: item.poliklinik.nm_poli,
+                        dokter: [namaDokter]
+                    };
+                } else {
+                    groupedData[kdPoli].dokter.push(namaDokter);
+                }
+            });
+            const groupedDataArray = Object.values(groupedData);
+
+            // group by kd_poli list dokter
+            return res.status(200).json({
+                status: true,
+                message: 'Data jadwal',
+                record: groupedDataArray.length,
+                data: groupedDataArray,
+            });
+
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err.message
+            });
+
+        }
+    },
 
 }
