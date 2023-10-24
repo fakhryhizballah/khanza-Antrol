@@ -1,5 +1,5 @@
 'use strict';
-const { reg_periksa, pasien, dokter, poliklinik, jadwal } = require('../models');
+const { reg_periksa, pasien, dokter, poliklinik, jadwal,pegawai } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
     getIGD: async (req, res) => {
@@ -157,8 +157,14 @@ module.exports = {
                 include: [{
                     model: dokter,
                     as: 'dokter',
-                    attributes: ['nm_dokter']
-                }],
+                    attributes: ['nm_dokter', 'no_ijn_praktek']
+                },
+                {
+                    model: pegawai,
+                    as: 'pegawai',
+                    attributes: ['no_ktp']
+                }
+            ],
                 order: [
                     ['kd_dokter', 'ASC'],
                 ],
@@ -176,6 +182,8 @@ module.exports = {
                     groupedData[namaDokter] = {
                         kd_dokter: kdDokter,
                         nm_dokter: namaDokter,
+                        no_ijn_praktek: "SIP: "+  item.dokter.no_ijn_praktek,
+                        no_ktp: item.pegawai.no_ktp,
                         jadwal: []
                     };
                 }
@@ -191,7 +199,7 @@ module.exports = {
             return res.status(200).json({
                 status: true,
                 message: 'Data jadwal',
-                record: dataJadwal.length,
+                record: groupedDataArray.length,
                 data: groupedDataArray,
             });
 

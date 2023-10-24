@@ -18,6 +18,11 @@ module.exports = (sequelize, DataTypes) => {
                 as: 'poliklinik',
                 foreignKey: 'kd_poli',
             });
+            jadwal.hasOne(models.pegawai, {
+                as: 'pegawai',
+                foreignKey: 'nik',
+                sourceKey: 'kd_dokter',
+            });
         }
     }
     jadwal.init({
