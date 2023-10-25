@@ -1,5 +1,5 @@
 'use strict';
-const { jns_perawatan_lab,template_laboratorium,jns_perawatan_radiologi } = require('../models');
+const { jns_perawatan_lab,template_laboratorium,jns_perawatan_radiologi,jns_perawatan } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
     getTempLab: async (req, res) => {
@@ -138,6 +138,42 @@ module.exports = {
                 //toINT: parseInt(param.limit),
                 limit: parseInt(param.limit),
                 // attributes: ['kd_jenis_prw', 'nm_perawatan'],
+            });
+            return res.status(200).json({
+                status: true,
+                message: 'Data radiologi',
+                record: data.length,
+                data: data
+            }
+            );
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
+    },
+    getTarifTind: async (req, res) => {
+        try {
+            const param = req.query;
+            if (!param.limit) {
+                param.limit = 100;
+            }
+            if (param.limit > 100) {
+                param.limit = 100;
+            }
+            const data = await jns_perawatan.findAll({
+                where: {
+                    status: '1',
+                    [Op.or]: [
+                        { kd_jenis_prw: { [Op.like]: `%${param.search}%` } },
+                        { nm_perawatan: { [Op.like]: `%${param.search}%` } },
+                    ]
+                },
+                //toINT: parseInt(param.limit),
+                limit: parseInt(param.limit),
+                attributes: ['kd_jenis_prw', 'nm_perawatan','total_byrdrpr'],
             });
             return res.status(200).json({
                 status: true,
