@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       primaryKey: true,
     },
-    tgl_registrasi: DataTypes.DATE,
+    tgl_registrasi: DataTypes.DATEONLY,
     jam_reg: DataTypes.TIME,
     kd_dokter: DataTypes.STRING,
     no_rkm_medis: DataTypes.STRING,

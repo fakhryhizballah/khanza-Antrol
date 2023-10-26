@@ -271,12 +271,16 @@ module.exports = {
     getAntiranPoli: async (req, res) => {
         try {
             let query = req.query;
+            console.log(query);
             let dataAntiran = await reg_periksa.findAll({
-                attributes: ['no_reg','no_rawat'],
+                attributes: ['no_reg', 'no_rawat', 'tgl_registrasi', 'kd_poli', 'status_lanjut'],
                 where: {
+                    // tgl_registrasi: {
+                    //     [Op.between]: ['2022-09-08', '2022-09-11']
+                    // },
+                    tgl_registrasi: "2022-09-09",
                     kd_poli: query.kd_poli,
-                    tgl_registrasi: query.tgl_antrean,
-                    status_lanjut:"Ralan"
+                    status_lanjut: 'Ralan'
                 },
                 // include: [{
                 //     model: pasien,
@@ -287,9 +291,9 @@ module.exports = {
                 //     as: 'dokter',
                 //     attributes: ['nm_dokter']
                 // }],
-                order: [
-                    ['no_reg', 'ASC'],
-                ],
+                // order: [
+                //     ['no_reg', 'ASC'],
+                // ],
             });
             return res.status(200).json({
                 status: true,
