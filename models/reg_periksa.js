@@ -56,7 +56,7 @@ module.exports = (sequelize, DataTypes) => {
     almt_pj: DataTypes.STRING,
     hubunganpj: DataTypes.STRING,
     biaya_reg: DataTypes.STRING,
-    stts: DataTypes.STRING,
+    stts: DataTypes.ENUM('Belum','Sudah','Batal','Berkas Diterima','Dirujuk','Meninggal','Dirawat','Pulang Paksa'),
     stts_daftar: DataTypes.ENUM('-', 'Lama', 'Baru'),
     status_lanjut: DataTypes.ENUM('Ralan', 'Ranap'),
     kd_pj: DataTypes.STRING,
