@@ -268,5 +268,45 @@ module.exports = {
 
         }
     },
+    getAntiranPoli: async (req, res) => {
+        try {
+            let query = req.query;
+            let dataAntiran = await reg_periksa.findAll({
+                attributes: ['no_reg','no_rawat'],
+                where: {
+                    kd_poli: query.kd_poli,
+                    tgl_registrasi: query.tgl_antrean,
+                    status_lanjut:"Ralan"
+                },
+                // include: [{
+                //     model: pasien,
+                //     as: 'pasien',
+                //     attributes: ['nm_pasien', 'no_ktp', 'no_bpjs']
+                // }, {
+                //     model: dokter,
+                //     as: 'dokter',
+                //     attributes: ['nm_dokter']
+                // }],
+                order: [
+                    ['no_reg', 'ASC'],
+                ],
+            });
+            return res.status(200).json({
+                status: true,
+                message: 'Data antrean',
+                record: dataAntiran.length,
+                data: dataAntiran,
+            });
+
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err.message
+            });
+
+        }
+    },
 
 }

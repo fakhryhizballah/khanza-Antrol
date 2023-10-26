@@ -13,5 +13,6 @@ routes.get('/poli/:kd_poli',middleware.check, ralan.getPoliByKdPoli);
 routes.get('/jadwal', middleware.check, ralan.getJadwalPoli);
 routes.get('/jadwal/bydr', middleware.check, ralan.getJadwaldrPoli);
 routes.get('/drpoli', middleware.check, ralan.getDrPoli);
+routes.get('/antiran/poli', middleware.check, ralan.getAntiranPoli);
 
 module.exports = routes;

@@ -52,9 +52,17 @@ module.exports = (sequelize, DataTypes) => {
     no_rkm_medis: DataTypes.STRING,
     kd_dokter: DataTypes.STRING,
     kd_poli: DataTypes.STRING,
-    status_poli: DataTypes.ENUM('Lama', 'Baru'),
+    p_jawab: DataTypes.STRING,
+    almt_pj: DataTypes.STRING,
+    hubunganpj: DataTypes.STRING,
+    biaya_reg: DataTypes.STRING,
+    stts: DataTypes.STRING,
     stts_daftar: DataTypes.ENUM('-', 'Lama', 'Baru'),
     status_lanjut: DataTypes.ENUM('Ralan', 'Ranap'),
+    kd_pj: DataTypes.STRING,
+    umurdaftar: DataTypes.INTEGER,
+    sttsumur: DataTypes.ENUM('Th','Bl','Hr'),
+    status_poli: DataTypes.ENUM('Lama', 'Baru')
   }, {
     sequelize,
     modelName: 'reg_periksa',
