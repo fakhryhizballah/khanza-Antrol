@@ -103,7 +103,6 @@ module.exports = {
     getJadwalPoli: async (req, res) => {
         try {
             let query = req.query;
-            // console.log(query);
             let dataJadwal = await jadwal.findAll({
                 attributes: ['kd_dokter', 'hari_kerja', 'jam_mulai', 'jam_selesai', 'kd_poli', 'kuota'],
                 where: {
