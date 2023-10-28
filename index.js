@@ -14,11 +14,13 @@ const routesicd = require('./routes/icd');
 const routespetugas = require('./routes/petugas');
 const routeralan  = require('./routes/ralan');
 const routepenunjang  = require('./routes/penunjang');
+const dashboard = require('./routes/dashboard');
 app.use('/api/ranap', routes);
 app.use('/api/ralan', routeralan);
 app.use('/api/icd', routesicd);
 app.use('/api/petugas', routespetugas);
 app.use('/api/penunjang', routepenunjang);
+app.use('/api/dashboard', dashboard);
 app.use('/api/users', require('./routes/user'));
 
 const PORT = process.env.PORT || 3000;
