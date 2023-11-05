@@ -90,6 +90,25 @@ module.exports = {
         }
 
     },
+    getpenyakit: async (req, res) => {
+        try {
+            const param = req.query;
+            return res.status(200).json({
+                status: true,
+                message: 'Reg Penyakit ralan',
+                record: 0,
+                data: param
+            }
+            );
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
+
+    },
     test: async (req, res) => {
         try {
             const param = req.query;
