@@ -118,12 +118,7 @@ module.exports = {
       const param = req.query;
       let data_reg = await reg_periksa.findAll({
         attributes: [
-          "no_reg",
-          "no_rawat",
-          "tgl_registrasi",
           "kd_poli",
-          "status_lanjut",
-          "stts",
         ],
         where: {
           tgl_registrasi: { [Op.between]: [param.from, param.until] },
