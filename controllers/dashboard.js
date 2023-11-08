@@ -1,5 +1,5 @@
 "use strict";
-const { reg_periksa, poliklinik, penjab } = require("../models");
+const { reg_periksa, poliklinik, penjab,kamar_inap } = require("../models");
 const { Op } = require("sequelize");
 const { query } = require("express");
 module.exports = {
@@ -97,7 +97,7 @@ module.exports = {
       }
       return res.status(200).json({
         status: true,
-        message: "poliHarian",
+        message: "Stastistik Pelayanan Poliklinik",
         record: counts.length,
         data: {
           allrecord: allrecord,
@@ -154,7 +154,7 @@ module.exports = {
       }
       return res.status(200).json({
         status: true,
-        message: "poliHarian",
+        message: "Stastistik Pelayanan Poliklinik",
         record: counts.length,
         data: {
             allrecord: data_reg.length,
@@ -210,7 +210,7 @@ module.exports = {
     }
     return res.status(200).json({
       status: true,
-      message: "poliHarian",
+      message: "Stastistik Pengunaan Asurasni Pelayanan Poliklinik",
       record: counts.length,
       data: {
 
@@ -220,6 +220,36 @@ module.exports = {
     });
     } catch (err) {
       console.log(err);
+      return res.status(400).json({
+        status: false,
+        message: "Bad Request",
+        data: err,
+      });
+    }
+  },
+  getBelumPulang: async (req, res) => {
+    try {
+      const param = req.query;
+      const rawatInap = await kamar_inap.findAll({
+        // attributes: [
+        //   "no_rawat",
+        //   "tgl_masuk",
+        //   "tgl_keluar",
+        //   "lama",
+        //   "ttl_biaya",
+        //   "stts_pulang",
+        // ],
+        where: {
+          stts_pulang: "-",
+        },
+      });
+      return res.status(200).json({
+        status: true,
+        message: "Stastistik Rawat Inap belum pulang",
+        record: rawatInap.length,
+        data: rawatInap,
+      });
+    } catch (err) {
       return res.status(400).json({
         status: false,
         message: "Bad Request",

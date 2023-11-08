@@ -4,6 +4,7 @@ module.exports ={
         try {
             const token = (req.headers['authorization']).split(' ')[1];
             let data =   jwt.verify(token, process.env.JWT_SECRET_KEY);
+        console.log(req);
             console.log(data.permission);
             if(data.permission.includes('dashboard')){
                 next();
