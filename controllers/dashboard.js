@@ -1,5 +1,5 @@
 "use strict";
-const { reg_periksa, poliklinik } = require("../models");
+const { reg_periksa, poliklinik, penjab } = require("../models");
 const { Op } = require("sequelize");
 const { query } = require("express");
 module.exports = {
@@ -172,13 +172,54 @@ module.exports = {
   getAsuransi: async (req, res) => {
     try {
       const param = req.query;
-      return res.status(200).json({
-        status: true,
-        message: "poliHarian",
-        record: 0,
-        data: param,
-      });
+    const getAsuransi = await reg_periksa.findAll({
+      attributes: [
+        "kd_pj"
+      ],
+      where: {
+        tgl_registrasi: { [Op.between]: [param.from, param.until] },
+        status_lanjut: "Ralan",
+        stts: { [Op.ne]: "Batal" },
+      },
+      include: [
+        {
+          model: penjab,
+          as: "penjab",
+          attributes: ["png_jawab"],
+        },
+      ],
+    });
+    const counts = [];
+    for (let i of getAsuransi) {
+      const kd_pj = i.kd_pj;
+      const penjabName = i.penjab.png_jawab;
+      // Cari apakah sudah ada entri untuk kd_poli ini
+      const existingEntry = counts.find((item) => item.kd_pj === kd_pj);
+      if (existingEntry) {
+        // Jika sudah ada, tambahkan jumlah poliklinik dan status
+        existingEntry.totalKunjungan++;
+      } else {
+        // Jika belum ada, buat entri baru
+        const newEntry = {
+          kd_pj,
+          penjab: penjabName,
+          totalKunjungan: 1,
+        };
+        counts.push(newEntry);
+      }
+    }
+    return res.status(200).json({
+      status: true,
+      message: "poliHarian",
+      record: counts.length,
+      data: {
+
+          allrecord: getAsuransi.length,
+          penjab: counts,
+        },
+    });
     } catch (err) {
+      console.log(err);
       return res.status(400).json({
         status: false,
         message: "Bad Request",

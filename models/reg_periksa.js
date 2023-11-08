@@ -36,6 +36,12 @@ module.exports = (sequelize, DataTypes) => {
         sourceKey: 'kd_poli',
         as: 'poliklinik'
       });
+      reg_periksa.hasOne(models.penjab, {
+        foreignKey: 'kd_pj',
+        sourceKey: 'kd_pj',
+        as: 'penjab'
+      });
+      
       
     }
 

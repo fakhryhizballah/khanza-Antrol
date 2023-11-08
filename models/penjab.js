@@ -20,6 +20,11 @@ module.exports = (sequelize, DataTypes) => {
       primaryKey: true,
     },
     png_jawab: DataTypes.STRING,
+    nama_perusahaan: DataTypes.STRING,
+    alamat_asuransi: DataTypes.STRING,
+    no_telp: DataTypes.STRING,
+    attn: DataTypes.STRING,
+    status: DataTypes.ENUM('0','1'),
 
     // createdAt: { type: DataTypes.DATE, field: 'created_at' },
     // updatedAt: { type: DataTypes.DATE, field: 'updated_at' },
