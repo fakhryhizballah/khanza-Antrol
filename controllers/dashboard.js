@@ -1,5 +1,5 @@
 "use strict";
-const { reg_periksa, poliklinik, penjab, kamar_inap, kamar, bangsal,pasien } = require("../models");
+const { reg_periksa, poliklinik, penjab, kamar_inap, kamar, bangsal } = require("../models");
 const { Op } = require("sequelize");
 module.exports = {
   poliHarian: async (req, res) => {
@@ -115,13 +115,14 @@ module.exports = {
   getKunjungan: async (req, res) => {
     try {
       const param = req.query;
+      const { id } = req.params;
       let data_reg = await reg_periksa.findAll({
         attributes: [
           "kd_poli",
         ],
         where: {
           tgl_registrasi: { [Op.between]: [param.from, param.until] },
-          status_lanjut: "Ralan",
+          status_lanjut: id,
           stts: { [Op.ne]: "Batal" },
         },
         include: [
@@ -171,13 +172,14 @@ module.exports = {
   getAsuransi: async (req, res) => {
     try {
       const param = req.query;
+      const { id } = req.params;
     const getAsuransi = await reg_periksa.findAll({
       attributes: [
         "kd_pj"
       ],
       where: {
         tgl_registrasi: { [Op.between]: [param.from, param.until] },
-        status_lanjut: "Ralan",
+        status_lanjut: id,
         stts: { [Op.ne]: "Batal" },
       },
       include: [
@@ -209,10 +211,9 @@ module.exports = {
     }
     return res.status(200).json({
       status: true,
-      message: "Stastistik Pengunaan Asurasni Pelayanan Poliklinik",
+      message: "Stastistik pengunaan asurasni pelayanan poliklinik",
       record: counts.length,
       data: {
-
           allrecord: getAsuransi.length,
           penjab: counts,
         },
@@ -228,17 +229,8 @@ module.exports = {
   },
   getBelumPulang: async (req, res) => {
     try {
-      const param = req.query;
-      const kamars = await kamar.findAll({
-        where: {
-          statusdata: "1",
-          status: "ISI",
-        },
-      });
       const rawatInap = await kamar_inap.findAll({
         attributes: [
-          "no_rawat",
-          "tgl_masuk",
           "kd_kamar",
           "stts_pulang",
         ],
@@ -258,30 +250,47 @@ module.exports = {
               },
             ],
           },
-          {
-            model: reg_periksa,
-            as: "reg_periksa",
-            attributes: ["no_rkm_medis"],
-            include: [
-              {
-                model: pasien,
-                as: "pasien",
-                attributes: ["nm_pasien"],
-              }],
-          },
         ],
         order : [
           ['kd_kamar', 'DESC'],
         ],
       });
 
-      //tamilkan kd_kamar yang sama saja
+      // grup by bangsal
+      // count per bangsal
+      const counts = [];
+      for (let i of rawatInap) {
+        const kd_bangsal = i.kode_kamar.bangsal.nm_bangsal;
+        const kd_kamar = i.kd_kamar;
+        const status = i.stts_pulang;
+        // Cari apakah sudah ada entri untuk kd_poli ini
+        const existingEntry = counts.find((item) => item.kd_bangsal === kd_bangsal);
+        if (existingEntry) {
+          // Jika sudah ada, tambahkan jumlah poliklinik dan status
+          if (status === "-") {
+            existingEntry.belumPulang++;
+          }
+        } else {
+          // Jika belum ada, buat entri baru
+          let action = {};
+          if (status === "-") {
+            action = {
+              belumPulang: 1,
+            };
+          }
+          const newEntry = {
+            kd_bangsal,
+            belumPulang: 1,
+          };
+          counts.push(newEntry);
+        }
+      }
       
       return res.status(200).json({
         status: true,
-        message: "Stastistik Rawat Inap belum pulang",
+        message: "Stastistik rawat inap pasien belum pulang",
         record: rawatInap.length,
-        data: rawatInap,
+        data: counts,
       });
     } catch (err) {
       console.log(err);
@@ -319,6 +328,342 @@ module.exports = {
         data: param,
       });
     } catch (err) {
+      return res.status(400).json({
+        status: false,
+        message: "Bad Request",
+        data: err,
+      });
+    }
+  },
+  getPulang: async (req, res) => {
+    try {
+      const query = req.query;
+      const rawatInap = await kamar_inap.findAll({
+        attributes: [
+          "no_rawat",
+          "tgl_masuk",
+          "tgl_keluar",
+          "kd_kamar",
+          "stts_pulang",
+        ],
+        where: {
+          tgl_keluar: { [Op.between]: [query.from, query.until] },
+          stts_pulang: { [Op.ne]: "-" },
+          stts_pulang: { [Op.ne]: "Pindah Kamar" },
+        },
+        include: [
+          {
+            model: kamar,
+            as: "kode_kamar",
+            attributes: ["kd_bangsal"],
+            include: [
+              {
+                model: bangsal,
+                as: "bangsal",
+                attributes: ["nm_bangsal"],
+              },
+            ],
+          },
+        ],
+        order: [
+          ['kd_kamar', 'DESC'],
+        ],
+      });
+
+      // grup by bangsal
+      // count per bangsal
+      const counts = [];
+      for (let i of rawatInap) {
+        const kd_bangsal = i.kode_kamar.bangsal.nm_bangsal;
+        const kd_kamar = i.kd_kamar;
+        const status = i.stts_pulang;
+        // Cari apakah sudah ada entri untuk kd_poli ini
+        const existingEntry = counts.find((item) => item.kd_bangsal === kd_bangsal);
+        if (existingEntry) {
+          existingEntry.pasien++;
+          // Jika sudah ada, tambahkan jumlah poliklinik dan status
+          if (status === "Sehat") {
+            existingEntry.data.sehat++;
+          }
+          if (status === "Rujuk") {
+            existingEntry.data.rujuk++;
+          }
+          if (status === "APS") {
+            existingEntry.data.aps++;
+          }
+          if (status === "+") {
+            existingEntry.data.positif++;
+          }
+          if (status === "Meninggal") {
+            existingEntry.data.meninggal++;
+          }
+          if (status === "Sembuh") {
+            existingEntry.data.sembuh++;
+          }
+          if (status === "Membaik") {
+            existingEntry.data.membaik++;
+          }
+          if (status === "Pulang Paksa") {
+            existingEntry.data.pulangPaksa++;
+          }
+          if (status === "Status Belum Lengkap") {
+            existingEntry.data.statusBelumLengkap++;
+          }
+          if (status === "Atas Persetujuan Dokter") {
+            existingEntry.data.persetujuanDokter++;
+          }
+          if (status === "Atas Permintaan Sendiri") {
+            existingEntry.data.permintaanSendiri++;
+          }
+          if (status === "Isoman") {
+            existingEntry.data.isoman++;
+          }
+          if (status === "Lain-lain") {
+            existingEntry.data.lainlain++;
+          }
+
+        } else {
+          // Jika belum ada, buat entri baru
+          let action = {};
+          if (status === "Sehat") {
+            action = {
+              sehat: 1,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Rujuk") {
+            action = {
+              sehat: 0,
+              rujuk: 1,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "APS") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 1,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "+") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 1,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Meninggal") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 1,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Sembuh") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 1,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Membaik") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 1,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Pulang Paksa") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 1,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Status Belum Lengkap") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 1,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Atas Persetujuan Dokter") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 1,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Atas Permintaan Sendiri") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 1,
+              isoman: 0,
+              lainlain: 0,
+            };
+          }
+          if (status === "Isoman") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 1,
+              lainlain: 0,
+            };
+          }
+          if (status === "Lain-lain") {
+            action = {
+              sehat: 0,
+              rujuk: 0,
+              aps: 0,
+              positif: 0,
+              meninggal: 0,
+              sembuh: 0,
+              membaik: 0,
+              pulangPaksa: 0,
+              statusBelumLengkap: 0,
+              persetujuanDokter: 0,
+              permintaanSendiri: 0,
+              isoman: 0,
+              lainlain: 1,
+            };
+          }
+          const newEntry = {
+            kd_bangsal,
+            pasien: 1,
+            data: action
+
+          };
+          counts.push(newEntry);
+        }
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "Stastistik Rawat Inap Pasien pulang",
+        record: rawatInap.length,
+        data: counts
+      });
+    } catch (err) {
+      console.log(err);
       return res.status(400).json({
         status: false,
         message: "Bad Request",
