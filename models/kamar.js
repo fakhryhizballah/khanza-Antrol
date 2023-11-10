@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
       kamar.belongsTo(models.bangsal, {
         foreignKey: 'kd_bangsal',
         sourceKey: 'kd_bangsal',
+        as: 'bangsal'
       });
     }
     
@@ -25,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     kd_bangsal: DataTypes.STRING,
     trf_kamar: DataTypes.DOUBLE,
-    status: DataTypes.ENUM('0','1'),
+    status: DataTypes.ENUM('ISI','KOSONG','DIBERSIHKAN','DIBOOKING'),
     kelas: DataTypes.ENUM('Kelas 1','Kelas 2','Kelas 3','Kelas Utama','Kelas VIP','Kelas VVIP'),
     statusdata: DataTypes.ENUM('0','1'),
   }, {

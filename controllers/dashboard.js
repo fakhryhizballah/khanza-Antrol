@@ -1,7 +1,6 @@
 "use strict";
-const { reg_periksa, poliklinik, penjab,kamar_inap } = require("../models");
+const { reg_periksa, poliklinik, penjab, kamar_inap, kamar, bangsal,pasien } = require("../models");
 const { Op } = require("sequelize");
-const { query } = require("express");
 module.exports = {
   poliHarian: async (req, res) => {
     try {
@@ -230,19 +229,54 @@ module.exports = {
   getBelumPulang: async (req, res) => {
     try {
       const param = req.query;
+      const kamars = await kamar.findAll({
+        where: {
+          statusdata: "1",
+          status: "ISI",
+        },
+      });
       const rawatInap = await kamar_inap.findAll({
-        // attributes: [
-        //   "no_rawat",
-        //   "tgl_masuk",
-        //   "tgl_keluar",
-        //   "lama",
-        //   "ttl_biaya",
-        //   "stts_pulang",
-        // ],
+        attributes: [
+          "no_rawat",
+          "tgl_masuk",
+          "kd_kamar",
+          "stts_pulang",
+        ],
         where: {
           stts_pulang: "-",
         },
+        include: [
+          {
+            model: kamar,
+            as: "kode_kamar",
+            attributes: ["kd_bangsal"],
+            include: [
+              {
+                model: bangsal,
+                as: "bangsal",
+                attributes: ["nm_bangsal"],
+              },
+            ],
+          },
+          {
+            model: reg_periksa,
+            as: "reg_periksa",
+            attributes: ["no_rkm_medis"],
+            include: [
+              {
+                model: pasien,
+                as: "pasien",
+                attributes: ["nm_pasien"],
+              }],
+          },
+        ],
+        order : [
+          ['kd_kamar', 'DESC'],
+        ],
       });
+
+      //tamilkan kd_kamar yang sama saja
+      
       return res.status(200).json({
         status: true,
         message: "Stastistik Rawat Inap belum pulang",
@@ -250,6 +284,7 @@ module.exports = {
         data: rawatInap,
       });
     } catch (err) {
+      console.log(err);
       return res.status(400).json({
         status: false,
         message: "Bad Request",

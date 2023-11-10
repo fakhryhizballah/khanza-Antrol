@@ -7,7 +7,7 @@ const app = express();
 
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(cors())
+app.use(cors());
 
 const routes = require('./routes/ranap');
 const routesicd = require('./routes/icd');
