@@ -8,5 +8,6 @@ const ranap = require('../controllers/ranap');
 routes.get('/bp',middleware.check, ranap.getBp);
 routes.get('/tm',middleware.check, ranap.getTglMasuk);
 routes.get('/kamar',middleware.check, ranap.getKamar);
+routes.get('/belumpulang', middleware.check, ranap.getBelumPulang);
 
 module.exports = routes;

@@ -294,5 +294,64 @@ module.exports = {
         }
 
     },
+    getBelumPulang: async (req, res) => {
+        try {
+            const param = req.query;
+            const rawatInap = await kamar_inap.findAll({
+                attributes: [
+                    "no_rawat",
+                    "tgl_masuk",
+                    "tgl_masuk",
+                    "kd_kamar",
+                    "stts_pulang",
+                ],
+                where: {
+                    stts_pulang: "-",
+                },
+                include: [
+                    {
+                        model: kamar,
+                        as: "kode_kamar",
+                        attributes: ["kd_bangsal"],
+                        include: [
+                            {
+                                model: bangsal,
+                                as: "bangsal",
+                                attributes: ["nm_bangsal"],
+                                where: { nm_bangsal: { [Op.substring]: param.nm_bangsal } },
+                            },
+                        ],
+                    },
+                    {
+                        model: reg_periksa,
+                        as: "reg_periksa",
+                        attributes: ["no_rkm_medis"],
+                        include: [
+                            {
+                                model: pasien,
+                                as: "pasien",
+                                attributes: ["nm_pasien"],
+                            }],
+                    },
+                ],
+                order: [
+                    ['kd_kamar', 'DESC'],
+                ],
+            });
+            return res.status(200).json({
+                status: true,
+                message: "Stastistik Rawat Inap belum pulang",
+                record: rawatInap.length,
+                data: rawatInap,
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: "Bad Request",
+                data: err,
+            });
+        }
+    },
 
 }
