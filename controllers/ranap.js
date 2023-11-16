@@ -312,13 +312,13 @@ module.exports = {
                     {
                         model: kamar,
                         as: "kode_kamar",
-                        attributes: ["kd_bangsal"],
+                        attributes: ["status","kd_bangsal", "kelas"],
                         include: [
                             {
                                 model: bangsal,
                                 as: "bangsal",
                                 attributes: ["nm_bangsal"],
-                                where: { nm_bangsal: { [Op.substring]: param.nm_bangsal } },
+
                             },
                         ],
                     },
