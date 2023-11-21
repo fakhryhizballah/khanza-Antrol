@@ -10,5 +10,6 @@ routes.get('/reg/reports/:id', middleware.dashboard, dashboard.getKunjungan);
 routes.get('/reg/asuransi/:id', middleware.dashboard, dashboard.getAsuransi);
 routes.get('/regranap/belumpulang', middleware.dashboard, dashboard.getBelumPulang);
 routes.get('/regranap/pulang', middleware.dashboard, dashboard.getPulang);
+routes.get('/regranap/kamar/inap', middleware.dashboard, dashboard.getKamarInap);
 
 module.exports = routes;

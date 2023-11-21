@@ -671,4 +671,6 @@ module.exports = {
       });
     }
   },
+  getKamarInap: async (req, res) => {
+  }
 };
