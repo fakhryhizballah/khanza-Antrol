@@ -338,6 +338,13 @@ module.exports = {
                     ['kd_kamar', 'DESC'],
                 ],
             });
+     for (let i of rawatInap) {
+        if (i.kode_kamar.status == 'KOSONG') {
+        console.log(i.kd_kamar)
+        await kamar.update({ status: 'ISI' }, { where: { kd_kamar: i.kd_kamar } })
+        }
+        
+     }
             return res.status(200).json({
                 status: true,
                 message: "Stastistik Rawat Inap belum pulang",
