@@ -152,13 +152,14 @@ module.exports = {
           counts.push(newEntry);
         }
       }
+      let sortedData = counts.sort((a, b) => b.totalKunjungan - a.totalKunjungan);
       return res.status(200).json({
         status: true,
         message: "Stastistik Pelayanan Poliklinik",
         record: counts.length,
         data: {
             allrecord: data_reg.length,
-            poliklinik: counts,
+            poliklinik: sortedData,
           },
       });
     } catch (err) {
@@ -209,13 +210,14 @@ module.exports = {
         counts.push(newEntry);
       }
     }
+    let sortedData = counts.sort((a, b) => b.totalKunjungan - a.totalKunjungan);
     return res.status(200).json({
       status: true,
       message: "Stastistik pengunaan asurasni pelayanan poliklinik",
       record: counts.length,
       data: {
           allrecord: getAsuransi.length,
-          penjab: counts,
+          penjab: sortedData,
         },
     });
     } catch (err) {
@@ -261,7 +263,6 @@ module.exports = {
       const counts = [];
       for (let i of rawatInap) {
         const kd_bangsal = i.kode_kamar.bangsal.nm_bangsal;
-        const kd_kamar = i.kd_kamar;
         const status = i.stts_pulang;
         // Cari apakah sudah ada entri untuk kd_poli ini
         const existingEntry = counts.find((item) => item.kd_bangsal === kd_bangsal);
@@ -285,12 +286,13 @@ module.exports = {
           counts.push(newEntry);
         }
       }
+      let sortedData = counts.sort((a, b) => b.belumPulang - a.belumPulang);
       
       return res.status(200).json({
         status: true,
         message: "Stastistik rawat inap pasien belum pulang",
-        record: rawatInap.length,
-        data: counts,
+        record: counts.length,
+        data: sortedData,
       });
     } catch (err) {
       console.log(err);
@@ -655,12 +657,12 @@ module.exports = {
           counts.push(newEntry);
         }
       }
-
+      let sortedData = counts.sort((a, b) => b.pasien - a.pasien);
       return res.status(200).json({
         status: true,
         message: "Stastistik Rawat Inap Pasien pulang",
-        record: rawatInap.length,
-        data: counts
+        record: counts.length,
+        data: sortedData
       });
     } catch (err) {
       console.log(err);
@@ -726,12 +728,12 @@ module.exports = {
         }
         counts.push(stts_kamar);
       }
-
+      let sortedData = counts.sort((a, b) => b.isi - a.isi);
       return res.status(200).json({
         status: true,
         message: "Stastistik ketersediaan kamar inap",
         record: counts.length,
-        data: counts
+        data: sortedData
       });
     } catch (err) {
       console.log(err);
