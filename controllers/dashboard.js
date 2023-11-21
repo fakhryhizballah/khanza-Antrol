@@ -672,5 +672,74 @@ module.exports = {
     }
   },
   getKamarInap: async (req, res) => {
+    try {
+      const kamars = await kamar.findAll({
+        attributes: [
+          "kd_bangsal",
+        ],
+        where: {
+          statusdata: "1",
+        },
+        group: ["kd_bangsal"],
+        include: [
+          {
+            model: bangsal,
+            as: "bangsal",
+            attributes: ["nm_bangsal"],
+          },
+        ],
+      });
+      const counts = [];
+      for (let i of kamars) {
+        let { isi, kosong, booking, total } = 0;
+        isi = await kamar.count({
+          where: {
+            kd_bangsal: i.kd_bangsal,
+            status: "ISI",
+            statusdata: "1",
+
+          },
+        });
+        kosong = await kamar.count({
+          where: {
+            kd_bangsal: i.kd_bangsal,
+            status: "KOSONG",
+            statusdata: "1",
+          },
+        });
+        booking = await kamar.count({
+          where: {
+            kd_bangsal: i.kd_bangsal,
+            status: "DIBOOKING",
+            statusdata: "1",
+          },
+        });
+        total = isi + kosong + booking;
+
+        let stts_kamar = {
+          kd_bangsal: i.kd_bangsal,
+          bangsal: i.bangsal.nm_bangsal,
+          isi: isi,
+          kosong: kosong,
+          booking: booking,
+          total: total,
+        }
+        counts.push(stts_kamar);
+      }
+
+      return res.status(200).json({
+        status: true,
+        message: "Stastistik ketersediaan kamar inap",
+        record: counts.length,
+        data: counts
+      });
+    } catch (err) {
+      console.log(err);
+      return res.status(400).json({
+        status: false,
+        message: "Bad Request",
+        data: err,
+      });
+    }
   }
 };
