@@ -61,6 +61,9 @@ module.exports = {
           if (status === "Batal") {
             existingEntry.status.Batal++;
           }
+          if (status === "Berkas Diterima") {
+            existingEntry.status.Berkas_Diterima++;
+          }
         } else {
           // Jika belum ada, buat entri baru
           let action = {};
@@ -69,6 +72,7 @@ module.exports = {
               Sudah: 1,
               Belum: 0,
               Batal: 0,
+              Berkas_Diterima: 0,
             };
           }
           if (status === "Belum") {
@@ -76,6 +80,7 @@ module.exports = {
               Sudah: 0,
               Belum: 1,
               Batal: 0,
+              Berkas_Diterima: 0,
             };
           }
           if (status === "Batal") {
@@ -83,6 +88,15 @@ module.exports = {
               Sudah: 0,
               Belum: 0,
               Batal: 1,
+              Berkas_Diterima: 0,
+            };
+          }
+          if (status === "Berkas Diterima") {
+            action = {
+              Sudah: 0,
+              Belum: 0,
+              Batal: 0,
+              Berkas_Diterima: 1,
             };
           }
           const newEntry = {
