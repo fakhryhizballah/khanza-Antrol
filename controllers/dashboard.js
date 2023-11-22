@@ -94,13 +94,14 @@ module.exports = {
           counts.push(newEntry);
         }
       }
+      let sortedData = counts.sort((a, b) => b.poli_reg - a.poli_reg);
       return res.status(200).json({
         status: true,
         message: "Stastistik Pelayanan Poliklinik",
         record: counts.length,
         data: {
           allrecord: allrecord,
-          poliklinik: counts,
+          poliklinik: sortedData,
         },
         // data: data_reg
       });
