@@ -31,6 +31,37 @@ module.exports = {
         }
 
     },
+    addPassword: async (req, res) => {
+        let nip = req.params.nip;
+        try {
+            let userPegawi = await pegawai.findOne({
+                attributes: ['no_ktp', 'nama','nik'],
+                where: {
+                    no_ktp: nip
+                }
+            });
+            if (!userPegawi) {
+                return res.status(400).json({
+                    status: true,
+                    message: 'User unregister',
+                    data: null,
+                });
+            }
+            let user = await findUser(userPegawi.nik);
+            console.log(user);
+            return res.status(200).json({
+                status: true,
+                message: 'Password User',
+                data: user,
+            });
+        } catch (error) {
+            return res.status(500).json({
+                status: false,
+                message: 'error',
+                data: error.message,
+            });
+        }
+    },
     updatedPasword: async (req, res) => {
         let nip = req.params.nip;
         let { pass } = req.body;
