@@ -1,5 +1,5 @@
 'use strict';
-const { findUser, findUserPassword, updatedPasword, updateHakAses } = require('../helpers/user');
+const { findUser, findUserPassword, updatedPasword, updateHakAses, createUser } = require('../helpers/user');
 const { pegawai, petugas, dokter } = require('../models');
 const { Op } = require('sequelize');
 
@@ -32,14 +32,18 @@ module.exports = {
 
     },
     addPassword: async (req, res) => {
-        let nip = req.params.nip;
+        let nik = req.params.nik;
+        let body = req.body;
+        let pass = Math.floor(1000 + Math.random() * 9000);
+        let password = pass.toString();
         try {
             let userPegawi = await pegawai.findOne({
                 attributes: ['no_ktp', 'nama','nik'],
                 where: {
-                    no_ktp: nip
+                    no_ktp: nik
                 }
             });
+
             if (!userPegawi) {
                 return res.status(400).json({
                     status: true,
@@ -48,13 +52,21 @@ module.exports = {
                 });
             }
             let user = await findUser(userPegawi.nik);
-            console.log(user);
+            if (user) {
+                return res.status(400).json({
+                    status: true,
+                    message: 'User sudah terdaftar',
+                    data: null,
+                });
+            }
+            await createUser(userPegawi.nik, password);
             return res.status(200).json({
                 status: true,
-                message: 'Password User',
-                data: user,
+                message: 'success register',
+                data: body,
             });
         } catch (error) {
+            console.log(error);
             return res.status(500).json({
                 status: false,
                 message: 'error',
