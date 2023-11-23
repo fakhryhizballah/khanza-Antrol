@@ -46,7 +46,7 @@ module.exports = {
         console.log(nip);
         console.log(pass);
         let user = await sequelize.query("INSERT INTO user (id_user, password) VALUES (AES_ENCRYPT(:nip, 'nur'), AES_ENCRYPT(:pass, 'windi')) ", {
-            replacements: { nip: nip, pass: pass, stat },
+            replacements: { nip: nip, pass: pass },
             type: QueryTypes.INSERT
         });
         return user;
