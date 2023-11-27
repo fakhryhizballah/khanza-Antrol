@@ -297,6 +297,11 @@ module.exports = {
     getBelumPulang: async (req, res) => {
         try {
             const param = req.query;
+
+            if (param.kd_bangsal == undefined) {
+                param.kd_bangsal = "";
+            }
+            console.log(param.kd_bangsal)
             const rawatInap = await kamar_inap.findAll({
                 attributes: [
                     "no_rawat",
@@ -307,18 +312,21 @@ module.exports = {
                 ],
                 where: {
                     stts_pulang: "-",
+
                 },
                 include: [
                     {
                         model: kamar,
                         as: "kode_kamar",
                         attributes: ["status","kd_bangsal", "kelas"],
+                        where: {
+                            kd_bangsal: { [Op.substring]: param.kd_bangsal }
+                        },
                         include: [
                             {
                                 model: bangsal,
                                 as: "bangsal",
                                 attributes: ["nm_bangsal"],
-
                             },
                         ],
                     },
