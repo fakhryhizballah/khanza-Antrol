@@ -127,12 +127,14 @@ module.exports = {
                         include: [
                             {
                                 model: bangsal,
+                                as: 'bangsal',
                                 attributes: ['nm_bangsal'],
                             }
                         ]
                     },
                     {
                         model: reg_periksa,
+                        as: 'reg_periksa',
                         attributes: ['no_rkm_medis'],
                         include: [{
                             model: pasien,
@@ -170,6 +172,7 @@ module.exports = {
             });
 
         } catch (err) {
+            console.log(err)
             return res.status(400).json({
                 status: false,
                 message: 'Bad Request',
