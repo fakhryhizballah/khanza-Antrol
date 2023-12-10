@@ -245,12 +245,13 @@ module.exports = {
                     },
                 });
             }
-            var data = {
+            let data = {
                 no_rkm_medis: dataPasien.no_rkm_medis,
                 nm_pasien: dataPasien.nm_pasien,
                 jk: dataPasien.jk,
                 tgl_lahir: dataPasien.tgl_lahir,
                 alamat: dataPasien.alamat,
+                no_ktp: dataPasien.no_ktp,
                 kelurahan: dataPasien.kelurahan.nm_kel,
                 kecamatan: dataPasien.kecamatan.nm_kec,
                 kabupaten: dataPasien['kabupaten/kota'].nm_kab,
