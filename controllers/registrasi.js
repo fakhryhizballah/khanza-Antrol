@@ -391,4 +391,33 @@ module.exports = {
             });
         }
     },
+    getAsuransi: async (req, res) => {
+        try {
+            let dataAsuransi = await penjab.findAll({
+                where: {
+                    status: '1',
+                },
+            });
+            if (!dataAsuransi) {
+                return res.status(404).json({
+                    status: false,
+                    message: "Not Found",
+                    data: "Asuransi tidak ditemukan",
+                });
+            }
+
+            return res.status(200).json({
+                status: true,
+                message: "success",
+                data: dataAsuransi
+            });
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({
+                status: false,
+                message: "Bad Request",
+                data: error,
+            });
+        }
+    }
 };
