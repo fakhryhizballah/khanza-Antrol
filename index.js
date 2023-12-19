@@ -21,6 +21,7 @@ app.use('/api/icd', routesicd);
 app.use('/api/petugas', routespetugas);
 app.use('/api/penunjang', routepenunjang);
 app.use('/api/dashboard', dashboard);
+app.use('/api/surat', require('./routes/surat'));
 app.use('/api/users', require('./routes/user'));
 
 const PORT = process.env.PORT || 3000;
