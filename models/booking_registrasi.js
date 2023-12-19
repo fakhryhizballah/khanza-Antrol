@@ -29,14 +29,14 @@ module.exports = (sequelize, DataTypes) => {
         }
     }
     booking_registrasi.init({
-        tanggal_booking: DataTypes.DATE,
+        tanggal_booking: DataTypes.DATEONLY,
         jam_booking: DataTypes.TIME,
         no_rkm_medis: {
             type: DataTypes.STRING,
             primaryKey: true,
         },
         tanggal_periksa: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             primaryKey: true,
         },
         kd_dokter: DataTypes.STRING,

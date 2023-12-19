@@ -1,4 +1,3 @@
-persetujuan_penolakan_tindakan
 'use strict';
 const {
     Model
@@ -34,38 +33,38 @@ module.exports = (sequelize, DataTypes) => {
         no_rawat: DataTypes.STRING,
         tanggal: DataTypes.DATE,
         diagnosa: DataTypes.STRING,
-        diagnosa_konfirmasi: DataTypes.enum('true', 'false'),
+        diagnosa_konfirmasi: DataTypes.ENUM('true', 'false'),
         tindakan: DataTypes.STRING,
-        tindakan_konfirmasi: DataTypes.enum('true', 'false'),
+        tindakan_konfirmasi: DataTypes.ENUM('true', 'false'),
         indikasi_tindakan: DataTypes.STRING,
-        indikasi_tindakan_konfirmasi: DataTypes.enum('true', 'false'),
+        indikasi_tindakan_konfirmasi: DataTypes.ENUM('true', 'false'),
         tata_cara: DataTypes.STRING,
-        tata_cara_konfirmasi: DataTypes.enum('true', 'false'),
+        tata_cara_konfirmasi: DataTypes.ENUM('true', 'false'),
         tujuan: DataTypes.STRING,
-        tujuan_konfirmasi: DataTypes.enum('true', 'false'),
+        tujuan_konfirmasi: DataTypes.ENUM('true', 'false'),
         risiko: DataTypes.STRING,
-        risiko_konfirmasi: DataTypes.enum('true', 'false'),
+        risiko_konfirmasi: DataTypes.ENUM('true', 'false'),
         komplikasi: DataTypes.STRING,
-        komplikasi_konfirmasi: DataTypes.enum('true', 'false'),
+        komplikasi_konfirmasi: DataTypes.ENUM('true', 'false'),
         prognosis: DataTypes.STRING,
-        prognosis_konfirmasi: DataTypes.enum('true', 'false'),
+        prognosis_konfirmasi: DataTypes.ENUM('true', 'false'),
         alternatif_dan_risikonya: DataTypes.STRING,
-        alternatif_konfirmasi: DataTypes.enum('true', 'false'),
+        alternatif_konfirmasi: DataTypes.ENUM('true', 'false'),
         biaya: DataTypes.DOUBLE,
-        biaya_konfirmasi: DataTypes.enum('true', 'false'),
+        biaya_konfirmasi: DataTypes.ENUM('true', 'false'),
         lain_lain: DataTypes.STRING,
-        lain_lain_konfirmasi: DataTypes.enum('true', 'false'),
+        lain_lain_konfirmasi: DataTypes.ENUM('true', 'false'),
         kd_dokter: DataTypes.STRING,
         nip: DataTypes.STRING,
         penerima_informasi: DataTypes.STRING,
         alasan_diwakilkan_penerima_informasi: DataTypes.STRING,
-        jk_penerima_informasi: DataTypes.enum('L', 'P'),
+        jk_penerima_informasi: DataTypes.ENUM('L', 'P'),
         tanggal_lahir_penerima_informasi: DataTypes.DATE,
         umur_penerima_informasi: DataTypes.STRING,
         alamat_penerima_informasi: DataTypes.STRING,
         no_hp: DataTypes.STRING,
-        hubungan_penerima_informasi: DataTypes.enum('Diri Sendiri', 'Orang Tua', 'Anak', 'Saudara Kandung', 'Teman', 'Lain-lain'),
-        pernyataan: DataTypes.enum('Belum Dikonfirmasi', 'Persetujuan', 'Penolakan'),
+        hubungan_penerima_informasi: DataTypes.ENUM('Diri Sendiri', 'Orang Tua', 'Anak', 'Saudara Kandung', 'Teman', 'Lain-lain'),
+        pernyataan: DataTypes.ENUM('Belum Dikonfirmasi', 'Persetujuan', 'Penolakan'),
         saksi_keluarga: DataTypes.STRING,
 
         // createdAt: { type: DataTypes.DATE, field: 'created_at' },
@@ -82,5 +81,5 @@ module.exports = (sequelize, DataTypes) => {
 
 
     });
-    return surat_persetujuan_umum;
+    return persetujuan_penolakan_tindakan;
 };

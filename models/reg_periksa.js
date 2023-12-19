@@ -56,7 +56,6 @@ module.exports = (sequelize, DataTypes) => {
     jam_reg: DataTypes.TIME,
     kd_dokter: DataTypes.STRING,
     no_rkm_medis: DataTypes.STRING,
-    kd_dokter: DataTypes.STRING,
     kd_poli: DataTypes.STRING,
     p_jawab: DataTypes.STRING,
     almt_pj: DataTypes.STRING,

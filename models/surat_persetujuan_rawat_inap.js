@@ -34,13 +34,13 @@ module.exports = (sequelize, DataTypes) => {
         tanggal: DataTypes.DATE,
         nama_pj: DataTypes.STRING,
         no_ktppj: DataTypes.STRING,
-        pendidikan_pj: DataTypes.enum('TS', 'TK', 'SD', 'SMP', 'SMA', 'SLTA/SEDERAJAT', 'D1', 'D2', 'D3', 'D4', 'S1', 'S2', 'S3', '-'),
+        pendidikan_pj: DataTypes.ENUM('TS', 'TK', 'SD', 'SMP', 'SMA', 'SLTA/SEDERAJAT', 'D1', 'D2', 'D3', 'D4', 'S1', 'S2', 'S3', '-'),
         alamatpj: DataTypes.STRING,
         no_telp: DataTypes.STRING,
         ruang: DataTypes.STRING,
-        kelas: DataTypes.enum('Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas Utama', 'Kelas VIP', 'Kelas VVIP'),
-        hubungan: DataTypes.enum('Suami', 'Istri', 'Anak', 'Ayah', 'Ibu', 'Saudara', 'Keponakan', 'Diri Saya'),
-        hak_kelas: DataTypes.enum('Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas Utama', 'Kelas VIP', 'Kelas VVIP', '-'),
+        kelas: DataTypes.ENUM('Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas Utama', 'Kelas VIP', 'Kelas VVIP'),
+        hubungan: DataTypes.ENUM('Suami', 'Istri', 'Anak', 'Ayah', 'Ibu', 'Saudara', 'Keponakan', 'Diri Saya'),
+        hak_kelas: DataTypes.ENUM('Kelas 1', 'Kelas 2', 'Kelas 3', 'Kelas Utama', 'Kelas VIP', 'Kelas VVIP', '-'),
         nama_alamat_keluarga_terdekat: DataTypes.STRING,
         bayar_secara: DataTypes.STRING,
         nip: DataTypes.STRING,
@@ -61,5 +61,5 @@ module.exports = (sequelize, DataTypes) => {
 
 
     });
-    return surat_persetujuan_umum;
+    return surat_persetujuan_rawat_inap;
 };

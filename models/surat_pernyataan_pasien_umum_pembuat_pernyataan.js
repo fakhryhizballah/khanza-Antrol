@@ -35,5 +35,5 @@ module.exports = (sequelize, DataTypes) => {
 
 
     });
-    return spesialis;
+    return surat_pernyataan_pasien_umum_pembuat_pernyataan;
 };

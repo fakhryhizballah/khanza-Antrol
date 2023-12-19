@@ -36,9 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         no_ktppj: DataTypes.STRING,
         tempat_lahirpj: DataTypes.STRING,
         lahirpj: DataTypes.DATE,
-        jkpj: DataTypes.enum('L', 'P'),
+        jkpj: DataTypes.ENUM('L', 'P'),
         alamatpj: DataTypes.STRING,
-        hubungan: DataTypes.enum('Suami', 'Istri', 'Anak', 'Ayah', 'Ibu', 'Saudara', 'Keponakan'),
+        hubungan: DataTypes.ENUM('Suami', 'Istri', 'Anak', 'Ayah', 'Ibu', 'Saudara', 'Keponakan'),
         no_telp: DataTypes.STRING,
         nip: DataTypes.STRING,
 
@@ -58,5 +58,5 @@ module.exports = (sequelize, DataTypes) => {
 
 
     });
-    return surat_persetujuan_umum;
+    return surat_pernyataan_pasien_umum;
 };
