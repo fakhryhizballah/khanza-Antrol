@@ -38,7 +38,20 @@ module.exports = {
                     data: "Pasien sudah melakukan registrasi",
                 });
             }
-            let cekNoReg = await booking_registrasi.findOne({
+            let cekNoRegBooking = await booking_registrasi.findOne({
+                where: {
+                    tanggal_periksa,
+                    kd_poli,
+                },
+                order: [
+                    ['no_reg', 'DESC'],
+                ],
+            });
+            let no_regBooking = '001';
+            if (cekNoRegBooking) {
+                no_regBooking = String(Number(no_regBooking) + Number(cekNoRegBooking.no_reg)).padStart(no_regBooking.length, '0');
+            }
+            let cekNoReg = await reg_periksa.findOne({
                 where: {
                     tgl_registrasi: tanggal_periksa,
                     kd_poli,
@@ -50,7 +63,10 @@ module.exports = {
             let no_reg = '001';
             if (cekNoReg) {
                 no_reg = String(Number(no_reg) + Number(cekNoReg.no_reg)).padStart(no_reg.length, '0');
-
+            }
+            // bandingkan no_reg dan no_regBooking jika no_regBooking lebih besar maka no_reg = no_regBooking
+            if (Number(no_regBooking) > Number(no_reg)) {
+                no_reg = no_regBooking;
             }
             let currentTime = getCurrentTime();
             let data = {
