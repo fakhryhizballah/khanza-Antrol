@@ -5,7 +5,7 @@ const middleware = require('../middleware/dasboard');
 
 const dashboard = require('../controllers/dashboard');
 
-routes.get('/regpoli/daily', middleware.dashboard, dashboard.poliHarian);
+routes.get('/regpoli/daily', middleware.dashboard, dashboard.poliHarian,);
 routes.get('/reg/reports/:id', middleware.dashboard, dashboard.getKunjungan);
 routes.get('/reg/asuransi/:id', middleware.dashboard, dashboard.getAsuransi);
 routes.get('/regranap/belumpulang', middleware.dashboard, dashboard.getBelumPulang);

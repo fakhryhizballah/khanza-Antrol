@@ -38,7 +38,7 @@ module.exports = {
                     data: "Pasien sudah melakukan registrasi",
                 });
             }
-            let cekNoReg = await reg_periksa.findOne({
+            let cekNoReg = await booking_registrasi.findOne({
                 where: {
                     tgl_registrasi: tanggal_periksa,
                     kd_poli,
@@ -49,7 +49,6 @@ module.exports = {
             });
             let no_reg = '001';
             if (cekNoReg) {
-                // no_reg = cekNoReg.no_reg + 1;
                 no_reg = String(Number(no_reg) + Number(cekNoReg.no_reg)).padStart(no_reg.length, '0');
 
             }
