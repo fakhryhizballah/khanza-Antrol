@@ -1,5 +1,5 @@
 'use strict';
-const { icd10,icd9 } = require('../models');
+const { icd10,icd9,penyakit,kategori_penyakit, reg_periksa, diagnosa_pasien } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
 geticd10: async (req, res) => {
@@ -58,7 +58,7 @@ geticd10: async (req, res) => {
             if (!data) {
                 return res.status(404).json({
                     status: false,
-                    message: 'Data not found',
+                    message: 'Data not founds',
                     data: null
                 });
             }
@@ -140,5 +140,51 @@ geticd10: async (req, res) => {
                 data: err
             });
         }
-  }
+    },
+    getRecapICD10: async (req, res) => {
+        try {
+          const {from, until, status_rawat} = req.query;
+          console.log(from, until);
+        let data = await reg_periksa.findAll({
+            where: {
+                tgl_registrasi: {
+                    [Op.between]: [from, until]
+                },
+                status_lanjut: status_rawat
+            },
+            attributes: ['no_rawat','tgl_registrasi', 'no_rkm_medis'],
+            include: [
+                {
+                    model: diagnosa_pasien,
+                    as: 'diagnosa_pasien',
+                    attributes: ['kd_penyakit', 'status', 'prioritas', 'status_penyakit'],
+                    order: [
+                        ['prioritas', 'DESC']
+                    ],
+                    limit: 3,
+                    include: [
+                        {
+                            model: penyakit,
+                            as: 'penyakit',
+                            attributes: ['nm_penyakit', 'ciri_ciri', 'status']
+                        }
+                    ]
+                }
+            ]
+        });
+
+            return res.status(200).json({
+                status: true,
+                message: 'Data icd10',
+                data: data
+            }
+            );
+        } catch (err) {
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err
+            });
+        }
+    }
 };

@@ -32,7 +32,6 @@ module.exports = (sequelize, DataTypes) => {
         nama_pasien: DataTypes.STRING(100),
         tanggal_lahir: DataTypes.DATEONLY,
         peserta: DataTypes.STRING(100),
-        jkel: DataTypes.ENUM('L','P'),
         no_kartu: DataTypes.STRING(25),
         tglpulang: DataTypes.DATE,
         asal_rujukan: DataTypes.ENUM('1. Faskes 1','2. Faskes 2(RS)'),
