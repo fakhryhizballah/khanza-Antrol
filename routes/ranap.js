@@ -12,4 +12,6 @@ routes.get('/kamar',middleware.check, ranap.getKamar);
 routes.get('/belumpulang', middleware.check, ranap.getBelumPulang);
 routes.get('/dasboard/belumpulang', middleware.check, dashboard.getKamarInap);
 
+routes.get('/pemeriksaan', middleware.check, ranap.getPemeriksaan);
+
 module.exports = routes;

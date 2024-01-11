@@ -1,5 +1,5 @@
 'use strict';
-const { reg_periksa, pasien, dokter, poliklinik, jadwal,pegawai } = require('../models');
+const { reg_periksa, pasien, dokter, poliklinik, jadwal, pegawai, pemeriksaan_ralan } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
     getIGD: async (req, res) => {
@@ -311,5 +311,69 @@ module.exports = {
 
         }
     },
+    getPemeriksaan: async (req, res) => {
+        try {
+            let query = req.query;
+            let dataPemeriksaan = await pemeriksaan_ralan.findAll({
+                // attributes: ['no_rawat', 'tgl_perawatan', 'jam_rawat', 'nip'],
+                where: {
+                    no_rawat: query.no_rawat,
+                },
+                include: [
+                    {
+                        model: pegawai,
+                        as: 'pegawai',
+                        attributes: ['nama']
+                    }],
+                order: [
+                    ['no_rawat', 'ASC'],
+                ],
+            });
+            return res.status(200).json({
+                status: true,
+                message: 'Data pemeriksaan',
+                record: dataPemeriksaan.length,
+                data: dataPemeriksaan,
+            });
+
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: 'Bad Request',
+                data: err.message
+            });
+
+        }
+    },
+    postPemeriksaan: async (req, res) => {
+        try {
+            let data = req.body;
+            if (!data.no_rawat || !data.tgl_perawatan || !data.jam_rawat || !data.nip || !data.keluhan || !data.pemeriksaan || !data.alergi || !data.penilaian || !data.instruksi || !data.evaluasi) {
+                return res.status(400).json({
+                    status: false,
+                    message: 'Data tidak lengkap',
+                    data: 'required field: no_rawat, tgl_perawatan, jam_rawat, nip, keluhan, pemeriksaan, alergi, penilaian, instruksi, evaluasi'
+                });
+            }
+            if (data.kesadaran == null) {
+                data.kesadaran = 'Compos Mentis';
+            }
+            let dataPemeriksaan = await pemeriksaan_ralan.create(data);
+            return res.status(200).json({
+                status: true,
+                message: 'Data pemeriksaan berhasil disimpan',
+                data: dataPemeriksaan,
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: 'Data pemeriksaan gagal disimpan',
+                data: err.message
+            });
+
+        }
+    }
 
 }

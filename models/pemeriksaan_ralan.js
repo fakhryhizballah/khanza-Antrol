@@ -9,16 +9,17 @@ module.exports = (sequelize, DataTypes) => {
          * This method is not a part of Sequelize lifecycle.
          * The `models/index` file will call this method automatically.
          */
-        // static associate(models) {
-        //     pemeriksaan_ralan.belongsTo(models.reg_periksa, {
-        //         as: 'reg_periksa',
-        //         foreignKey: 'no_rawat',
-        //     });
-        //     pemeriksaan_ralan.belongsTo(models.pegawai, {
-        //         as: 'pegawai',
-        //         foreignKey: 'nip',
-        //     });
-        // }
+        static associate(models) {
+            pemeriksaan_ralan.hasOne(models.reg_periksa, {
+                as: 'reg_periksa',
+                foreignKey: 'no_rawat',
+            });
+            pemeriksaan_ralan.hasOne(models.pegawai, {
+                as: 'pegawai',
+                foreignKey: 'nik',
+                sourceKey: 'nip',
+            });
+        }
     }
     pemeriksaan_ralan.init({
         no_rawat: {
@@ -26,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
         },
         tgl_perawatan: {
-            type: DataTypes.DATE,
+            type: DataTypes.DATEONLY,
             primaryKey: true,
         },
         jam_rawat: {

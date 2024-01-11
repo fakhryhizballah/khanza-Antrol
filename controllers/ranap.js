@@ -1,5 +1,5 @@
 'use strict';
-const { reg_periksa, pasien, kamar_inap, kamar, bangsal } = require('../models');
+const { reg_periksa, pasien, kamar_inap, kamar, bangsal, pemeriksaan_ranap, pegawai } = require('../models');
 const { Op } = require("sequelize");
 module.exports = {
     getRanap: async (req, res) => {
@@ -371,5 +371,60 @@ module.exports = {
             });
         }
     },
+    getPemeriksaan: async (req, res) => {
+        try {
+            const query = req.query;
+            const pemeriksaan = await pemeriksaan_ranap.findAll({
+                where: {
+                    no_rawat: query.no_rawat,
+                },
+                include: [
+                    {
+                        model: pegawai,
+                        as: 'pegawai',
+                        attributes: ['nama']
+                    }
+                ],
+            });
+            return res.status(200).json({
+                status: true,
+                message: "Stastistik pemeriksaan pasien rawat inap",
+                record: pemeriksaan.length,
+                data: pemeriksaan
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: "Bad Request",
+                data: err,
+            });
+        }
+    },
+    postPemeriksaan: async (req, res) => {
+        try {
+            let data = req.body;
+            if (!data.no_rawat || !data.tgl_perawatan || !data.jam_rawat || !data.nip || !data.keluhan || !data.pemeriksaan || !data.alergi || !data.penilaian || !data.instruksi || !data.evaluasi) {
+                return res.status(400).json({
+                    status: false,
+                    message: 'Data tidak lengkap',
+                    data: 'required field: no_rawat, tgl_perawatan, jam_rawat, nip, keluhan, pemeriksaan, alergi, penilaian, instruksi, evaluasi'
+                });
+            }
+            let dataPemeriksaan = await pemeriksaan_ranap.create(data);
+            return res.status(200).json({
+                status: true,
+                message: "Stastistik pemeriksaan pasien rawat inap",
+                record: dataPemeriksaan,
+            });
+        } catch (err) {
+            console.log(err);
+            return res.status(400).json({
+                status: false,
+                message: "Bad Request",
+                data: err,
+            });
+        }
+    }
 
 }
